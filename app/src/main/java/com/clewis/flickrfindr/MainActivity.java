@@ -1,10 +1,16 @@
 package com.clewis.flickrfindr;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.transition.Fade;
+import android.support.transition.Transition;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.clewis.flickrfindr.datamodel.Photo;
 import com.clewis.flickrfindr.fullscreen.ImageViewerFragment;
@@ -37,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, SearchFragment.Companion.newInstance())
+                .replace(R.id.fragment_container, SearchFragment.Companion.newInstance(), SearchFragment.NAME)
                 .commit();
 
 
@@ -46,10 +52,29 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
     }
 
     @Override
-    public void onImageClicked(@NonNull Photo photo) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, ImageViewerFragment.Companion.newInstance(photo))
+    public void onImageClicked(@NonNull Photo photo, @NonNull ImageView imageView) {
+        //image has not yet loaded, do not handle image clicks
+        if (imageView.getDrawable() == null) {
+            return;
+        }
+        float aspectRatio = (float) imageView.getDrawable().getIntrinsicWidth() / imageView.getDrawable().getIntrinsicHeight();
+
+        Fragment nextFragment = ImageViewerFragment.Companion.newInstance(photo, aspectRatio);
+
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                .beginTransaction();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fragmentTransaction.addSharedElement(imageView, imageView.getTransitionName());
+
+            Fragment previousFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (previousFragment != null && previousFragment.isAdded()) {
+                Transition exitFade = new Fade();
+                previousFragment.setExitTransition(exitFade);
+            }
+        }
+
+        fragmentTransaction.replace(R.id.fragment_container, nextFragment)
                 .addToBackStack(null)
                 .commit();
     }

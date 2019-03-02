@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ImageView
 import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
 
@@ -89,9 +90,10 @@ class SearchFragment: Fragment(), SearchContract.View, SearchCallback {
         imageAdapter?.addItems(photos)
     }
 
-    override fun onImageClicked(photo: Photo) {
-        (activity as SearchCallback?)?.onImageClicked(photo)
+    override fun onImageClicked(photo: Photo, photoView: ImageView) {
+        (activity as SearchCallback?)?.onImageClicked(photo, photoView)
     }
+
 
     override fun onImageSaved(photo: Photo) {
         (activity as SearchCallback?)?.onImageSaved(photo)

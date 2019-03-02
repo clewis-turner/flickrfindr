@@ -1,6 +1,7 @@
 package com.clewis.flickrfindr.search;
 
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -32,20 +33,19 @@ public class SearchViewHolder extends RecyclerView.ViewHolder {
         imageView.setOnClickListener(v -> {
             Photo photo = currentPhoto;
             if (photo != null) {
-                System.out.println("CHOWDER CLICKED IMAGE WITH URL " + photo.getUrl());
-                callback.onImageClicked(photo);
+                callback.onImageClicked(photo, imageView);
             }
         });
 
 //        titleView = itemView.findViewById(R.id.search_item_title_view);
 //
 //        bookmarkButton = itemView.findViewById(R.id.search_item_bookmark_button);
-
     }
 
     public void onBind(@NonNull Photo photo) {
         currentPhoto = photo;
         Glide.with(itemView.getContext()).load(photo.getUrl()).into(imageView);
+        ViewCompat.setTransitionName(imageView, photo.getId());
 
 //        titleView.setText(photo.getTitle());
 //        titleView.setText(photo.getTitle());
