@@ -1,5 +1,6 @@
 package com.clewis.flickrfindr.fullscreen
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -7,6 +8,9 @@ import android.support.transition.TransitionInflater
 import android.support.v4.app.Fragment
 import android.support.v4.widget.CircularProgressDrawable
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -17,12 +21,17 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
+import com.clewis.flickrfindr.db.BookmarkManager
 
 
 class ImageViewerFragment: Fragment() {
 
     private var loadingIndicator: CircularProgressDrawable? = null
     private var imageView: ImageView? = null
+
+    private var displayPhoto: Photo? = null
+
+    private var bookmarkManager: BookmarkManager? = null
 
     companion object {
         const val NAME = "ImageViewFragment"
@@ -41,8 +50,33 @@ class ImageViewerFragment: Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater?.inflate(R.menu.image_viewer_action_bar, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val photo = displayPhoto ?: return super.onOptionsItemSelected(item)
+
+        return when (item?.itemId) {
+            R.id.action_bar_bookmark -> {
+                if (bookmarkManager?.isPhotoBookmarked(photo) == true) {
+                    bookmarkManager?.deletePhoto(photo)
+                } else {
+                    bookmarkManager?.savePhoto(photo)
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        bookmarkManager = BookmarkManager(context)
+        setHasOptionsMenu(true)
         postponeEnterTransition();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
@@ -52,11 +86,14 @@ class ImageViewerFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_image_viewer, container, false)
 
-        val photo = arguments?.get(ARG_PHOTO) as Photo?
         val aspectRatio = arguments?.get(ARG_ASPECT_RATIO) as Float? ?: 1f
+
+        val photo = arguments?.get(ARG_PHOTO) as Photo?
+        displayPhoto = photo
 
         val photoView: ImageView? = view.findViewById(R.id.image_viewer_image_view)
         imageView = photoView
+
         if (container != null) {
             view?.layoutParams?.height = container.height
             view?.layoutParams?.width = container.width

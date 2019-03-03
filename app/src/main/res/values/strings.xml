@@ -6,5 +6,7 @@
 
     <string name="enter_photos_hint">Enter Search..</string>
 
+    <string name="action_bar_bookmark">bookmark</string>
+
     <string name="image_transition_name">imageview_fullscreen_click</string>
 </resources>
