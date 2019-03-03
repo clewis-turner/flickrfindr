@@ -40,7 +40,9 @@ class SearchPresenter(private var view: SearchContract.View?): SearchContract.Pr
         }
 
         currentSearchTerm = searchText
-        currentSubscription = flickrClient.getImagesForUrl("?method=flickr.photos.search&text=$searchText").subscribe(subscriber, errorConsumer)
+        currentSubscription = flickrClient.getImagesForUrl("?method=flickr.photos.search&text=$searchText")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber, errorConsumer)
     }
 
     override fun onMaxScroll() {
