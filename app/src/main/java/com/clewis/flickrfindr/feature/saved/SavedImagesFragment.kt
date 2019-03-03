@@ -1,4 +1,4 @@
-package com.clewis.flickrfindr.saved
+package com.clewis.flickrfindr.feature.saved
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,20 +7,15 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.ImageView
 import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.db.BookmarkManager
-import com.clewis.flickrfindr.search.SearchCallback
-import com.clewis.flickrfindr.search.SearchContract
-import com.clewis.flickrfindr.search.SearchFragment
-import com.clewis.flickrfindr.search.SearchImageAdapter
-import com.clewis.flickrfindr.search.SearchPresenter
+import com.clewis.flickrfindr.feature.base.ImageCallback
+import com.clewis.flickrfindr.feature.search.SearchImageAdapter
 
 
-class SavedImagesFragment : Fragment(), SearchCallback {
+class SavedImagesFragment : Fragment(), ImageCallback {
 
     companion object {
         const val NAME = "SavedImagesFragment"
@@ -48,11 +43,8 @@ class SavedImagesFragment : Fragment(), SearchCallback {
     }
 
     override fun onImageClicked(photo: Photo, photoView: ImageView) {
-        (activity as SearchCallback?)?.onImageClicked(photo, photoView)
+        (activity as ImageCallback?)?.onImageClicked(photo, photoView)
     }
 
-    override fun onImageSaved(photo: Photo) {
-        (activity as SearchCallback?)?.onImageSaved(photo)
-    }
 }
 

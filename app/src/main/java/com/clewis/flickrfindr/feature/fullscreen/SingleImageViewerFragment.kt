@@ -1,4 +1,4 @@
-package com.clewis.flickrfindr.fullscreen
+package com.clewis.flickrfindr.feature.fullscreen
 
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -23,10 +23,9 @@ import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.db.BookmarkManager
 
 
-class ImageViewerFragment: Fragment() {
+class SingleImageViewerFragment: Fragment() {
 
     private var loadingIndicator: CircularProgressDrawable? = null
-    private var imageView: ImageView? = null
 
     private var displayPhoto: Photo? = null
 
@@ -38,8 +37,8 @@ class ImageViewerFragment: Fragment() {
         const val ARG_PHOTO = "ARG_PHOTO"
         const val ARG_ASPECT_RATIO = "ARG_ASPECT_RATIO"
 
-        fun newInstance(photo: Photo, aspectRatio: Float): ImageViewerFragment {
-            val fragment = ImageViewerFragment()
+        fun newInstance(photo: Photo, aspectRatio: Float): SingleImageViewerFragment {
+            val fragment = SingleImageViewerFragment()
 
             val args = Bundle()
             args.putSerializable(ARG_PHOTO, photo)

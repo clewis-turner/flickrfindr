@@ -1,4 +1,4 @@
-package com.clewis.flickrfindr.search
+package com.clewis.flickrfindr.feature.search
 
 import android.content.Context
 import android.os.Bundle
@@ -14,9 +14,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
+import com.clewis.flickrfindr.feature.base.ImageCallback
 
 
-class SearchFragment: Fragment(), SearchContract.View, SearchCallback {
+class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
 
     var imageAdapter: SearchImageAdapter? = null
 
@@ -98,11 +99,7 @@ class SearchFragment: Fragment(), SearchContract.View, SearchCallback {
     }
 
     override fun onImageClicked(photo: Photo, photoView: ImageView) {
-        (activity as SearchCallback?)?.onImageClicked(photo, photoView)
+        (activity as ImageCallback?)?.onImageClicked(photo, photoView)
     }
 
-
-    override fun onImageSaved(photo: Photo) {
-        (activity as SearchCallback?)?.onImageSaved(photo)
-    }
 }

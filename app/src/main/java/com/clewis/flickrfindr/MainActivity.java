@@ -9,16 +9,15 @@ import android.support.transition.Transition;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.clewis.flickrfindr.datamodel.Photo;
-import com.clewis.flickrfindr.fullscreen.ImageViewerFragment;
-import com.clewis.flickrfindr.saved.SavedImagesFragment;
-import com.clewis.flickrfindr.search.SearchCallback;
-import com.clewis.flickrfindr.search.SearchFragment;
+import com.clewis.flickrfindr.feature.fullscreen.SingleImageViewerFragment;
+import com.clewis.flickrfindr.feature.saved.SavedImagesFragment;
+import com.clewis.flickrfindr.feature.base.ImageCallback;
+import com.clewis.flickrfindr.feature.search.SearchFragment;
 
-public class MainActivity extends AppCompatActivity implements SearchCallback {
+public class MainActivity extends AppCompatActivity implements ImageCallback {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
         }
         float aspectRatio = (float) imageView.getDrawable().getIntrinsicWidth() / imageView.getDrawable().getIntrinsicHeight();
 
-        Fragment nextFragment = ImageViewerFragment.Companion.newInstance(photo, aspectRatio);
+        Fragment nextFragment = SingleImageViewerFragment.Companion.newInstance(photo, aspectRatio);
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager()
                 .beginTransaction();
@@ -47,21 +46,17 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fragmentTransaction.addSharedElement(imageView, imageView.getTransitionName());
 
-//            Fragment previousFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-//            if (previousFragment != null && previousFragment.isAdded()) {
-//                Transition exitFade = new Fade();
-//                previousFragment.setExitTransition(exitFade);
-//            }
+            Fragment previousFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (previousFragment != null && previousFragment.isAdded()) {
+                Transition exitFade = new Fade();
+                exitFade.setStartDelay(150);
+                previousFragment.setExitTransition(exitFade);
+            }
         }
 
-        fragmentTransaction.replace(R.id.fragment_container, nextFragment)
+        fragmentTransaction.replace(R.id.fragment_container, nextFragment, SingleImageViewerFragment.NAME)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onImageSaved(@NonNull Photo photo) {
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -78,18 +73,24 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
             };
 
     private void showHome() {
+        //leave full screen fragment if applicable
         getSupportFragmentManager().popBackStack();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(SearchFragment.NAME);
+        if (fragment == null) {
+            fragment = SearchFragment.Companion.newInstance();
+        }
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, SearchFragment.Companion.newInstance(), SearchFragment.NAME)
+                .replace(R.id.fragment_container, fragment, SearchFragment.NAME)
                 .commit();
     }
 
     private void showSavedImages() {
+        //leave full screen fragment if applicable
         getSupportFragmentManager().popBackStack();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, SavedImagesFragment.Companion.newInstance(), SavedImagesFragment.NAME)
+                .add(R.id.fragment_container, SavedImagesFragment.Companion.newInstance(), SavedImagesFragment.NAME)
                 .commit();
     }
 }

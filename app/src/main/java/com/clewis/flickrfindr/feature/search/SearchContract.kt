@@ -1,4 +1,4 @@
-package com.clewis.flickrfindr.search
+package com.clewis.flickrfindr.feature.search
 
 import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.datamodel.PhotoData

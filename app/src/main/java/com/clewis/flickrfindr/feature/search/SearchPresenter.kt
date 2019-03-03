@@ -1,4 +1,4 @@
-package com.clewis.flickrfindr.search
+package com.clewis.flickrfindr.feature.search
 
 import com.clewis.flickrfindr.datamodel.PhotoData
 import com.clewis.flickrfindr.datamodel.PhotoResponse
@@ -7,7 +7,6 @@ import com.clewis.flickrfindr.network.FlickrClient
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
-import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
 
