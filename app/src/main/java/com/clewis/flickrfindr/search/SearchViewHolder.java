@@ -13,11 +13,7 @@ import com.clewis.flickrfindr.datamodel.Photo;
 
 public class SearchViewHolder extends RecyclerView.ViewHolder {
 
-    private final SearchCallback searchCallback;
-
     private final ImageView imageView;
-//    private final TextView titleView;
-//    private final Button bookmarkButton;
 
     private Photo currentPhoto = null;
 
@@ -27,8 +23,6 @@ public class SearchViewHolder extends RecyclerView.ViewHolder {
                             SearchCallback callback) {
 
         super(inflater.inflate(R.layout.search_item_view, parent, false));
-        searchCallback = callback;
-
         imageView = itemView.findViewById(R.id.search_item_image_view);
         imageView.setOnClickListener(v -> {
             Photo photo = currentPhoto;
@@ -37,17 +31,11 @@ public class SearchViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-//        titleView = itemView.findViewById(R.id.search_item_title_view);
-//
-//        bookmarkButton = itemView.findViewById(R.id.search_item_bookmark_button);
     }
 
     public void onBind(@NonNull Photo photo) {
         currentPhoto = photo;
         Glide.with(itemView.getContext()).load(photo.getUrl()).into(imageView);
         ViewCompat.setTransitionName(imageView, photo.getId());
-
-//        titleView.setText(photo.getTitle());
-//        titleView.setText(photo.getTitle());
     }
 }
