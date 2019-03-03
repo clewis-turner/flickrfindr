@@ -1,6 +1,5 @@
 package com.clewis.flickrfindr.fullscreen
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -61,8 +60,10 @@ class ImageViewerFragment: Fragment() {
         return when (item?.itemId) {
             R.id.action_bar_bookmark -> {
                 if (bookmarkManager?.isPhotoBookmarked(photo) == true) {
+                    item.setIcon(R.drawable.saved_inactive)
                     bookmarkManager?.deletePhoto(photo)
                 } else {
+                    item.setIcon(R.drawable.saved_active)
                     bookmarkManager?.savePhoto(photo)
                 }
                 true
@@ -76,8 +77,9 @@ class ImageViewerFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bookmarkManager = BookmarkManager(context)
+        displayPhoto = arguments?.get(ARG_PHOTO) as Photo?
         setHasOptionsMenu(true)
-        postponeEnterTransition();
+        postponeEnterTransition()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             sharedElementEnterTransition = TransitionInflater.from(context).inflateTransition(android.R.transition.move)
         }
@@ -86,48 +88,26 @@ class ImageViewerFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_image_viewer, container, false)
 
-        val aspectRatio = arguments?.get(ARG_ASPECT_RATIO) as Float? ?: 1f
-
-        val photo = arguments?.get(ARG_PHOTO) as Photo?
-        displayPhoto = photo
-
         val photoView: ImageView? = view.findViewById(R.id.image_viewer_image_view)
-        imageView = photoView
-
-        if (container != null) {
-            view?.layoutParams?.height = container.height
-            view?.layoutParams?.width = container.width
-
-            if (aspectRatio > 1f) {
-                val newHeight = (container.width / aspectRatio).toInt()
-                photoView?.layoutParams?.width = container.width
-                photoView?.layoutParams?.height = newHeight
-                (photoView?.layoutParams as? FrameLayout.LayoutParams?)?.topMargin = (container.height - newHeight) / 2
-            } else {
-                val newWidth = (container.height * aspectRatio).toInt()
-                photoView?.layoutParams?.height = container.height
-                photoView?.layoutParams?.width = newWidth
-                (photoView?.layoutParams as? FrameLayout.LayoutParams?)?.marginStart = (container.width - newWidth) / 2
+        if (photoView != null) {
+            //we can properly animate if container is instantiated and inflated
+            if (container != null) {
+                setAnimationBounds(container, photoView)
             }
-        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            photoView?.transitionName = photo?.id
-        }
-        if (photo != null && photoView != null) {
             loadingIndicator = CircularProgressDrawable(view.context)
             loadingIndicator?.strokeWidth = 5f
             loadingIndicator?.centerRadius = 25f
             loadingIndicator?.start()
             Glide.with(view.context)
-                    .load(photo.getUrl())
+                    .load(displayPhoto?.getUrl())
                     .listener(getRequestListener())
                     .placeholder(loadingIndicator)
                     .into(photoView)
         } else {
             //Uh oh! non-recoverable error...
         }
-        return view;
+        return view
     }
 
     override fun onDestroyView() {
@@ -146,6 +126,27 @@ class ImageViewerFragment: Fragment() {
                 loadingIndicator?.stop()
                 return false
             }
+        }
+    }
+
+    //Explicitly size everything based on container dimensions to get proper animation behavior for
+    //element transition
+    private fun setAnimationBounds(container: View, photoView: ImageView) {
+        val aspectRatio = arguments?.get(ARG_ASPECT_RATIO) as Float? ?: 1f
+        if (aspectRatio > 1f) {
+            val newHeight = (container.width / aspectRatio).toInt()
+            photoView.layoutParams?.width = container.width
+            photoView.layoutParams?.height = newHeight
+            (photoView.layoutParams as? FrameLayout.LayoutParams?)?.topMargin = (container.height - newHeight) / 2
+        } else {
+            val newWidth = (container.height * aspectRatio).toInt()
+            photoView.layoutParams?.height = container.height
+            photoView.layoutParams?.width = newWidth
+            (photoView.layoutParams as? FrameLayout.LayoutParams?)?.marginStart = (container.width - newWidth) / 2
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            photoView.transitionName = displayPhoto?.id
         }
     }
 }
