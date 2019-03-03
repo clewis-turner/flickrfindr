@@ -14,41 +14,21 @@ import android.widget.ImageView;
 
 import com.clewis.flickrfindr.datamodel.Photo;
 import com.clewis.flickrfindr.fullscreen.ImageViewerFragment;
+import com.clewis.flickrfindr.saved.SavedImagesFragment;
 import com.clewis.flickrfindr.search.SearchCallback;
 import com.clewis.flickrfindr.search.SearchFragment;
 
 public class MainActivity extends AppCompatActivity implements SearchCallback {
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-//                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-//                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-            }
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, SearchFragment.Companion.newInstance(), SearchFragment.NAME)
-                .commit();
+        showHome();
 
-
-//        BottomNavigationView navigation = findViewById(R.id.bottom_navigation_view);
-//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationView navigation = findViewById(R.id.bottom_navigation_view);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     @Override
@@ -67,11 +47,11 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             fragmentTransaction.addSharedElement(imageView, imageView.getTransitionName());
 
-            Fragment previousFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-            if (previousFragment != null && previousFragment.isAdded()) {
-                Transition exitFade = new Fade();
-                previousFragment.setExitTransition(exitFade);
-            }
+//            Fragment previousFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+//            if (previousFragment != null && previousFragment.isAdded()) {
+//                Transition exitFade = new Fade();
+//                previousFragment.setExitTransition(exitFade);
+//            }
         }
 
         fragmentTransaction.replace(R.id.fragment_container, nextFragment)
@@ -82,5 +62,34 @@ public class MainActivity extends AppCompatActivity implements SearchCallback {
     @Override
     public void onImageSaved(@NonNull Photo photo) {
 
+    }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        showHome();
+                        return true;
+                    case R.id.navigation_dashboard:
+                        showSavedImages();
+                        return true;
+                }
+                return false;
+            };
+
+    private void showHome() {
+        getSupportFragmentManager().popBackStack();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, SearchFragment.Companion.newInstance(), SearchFragment.NAME)
+                .commit();
+    }
+
+    private void showSavedImages() {
+        getSupportFragmentManager().popBackStack();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, SavedImagesFragment.Companion.newInstance(), SavedImagesFragment.NAME)
+                .commit();
     }
 }

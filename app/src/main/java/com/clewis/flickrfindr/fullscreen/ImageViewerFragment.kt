@@ -52,6 +52,9 @@ class ImageViewerFragment: Fragment() {
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.image_viewer_action_bar, menu)
+        if (bookmarkManager?.isPhotoBookmarked(displayPhoto) == true) {
+            menu?.findItem(R.id.action_bar_bookmark)?.setIcon(R.drawable.saved_active)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

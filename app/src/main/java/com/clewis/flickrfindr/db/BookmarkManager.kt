@@ -19,7 +19,10 @@ class BookmarkManager(context: Context?) {
     }
 
 
-    fun isPhotoBookmarked(photo: Photo): Boolean {
+    fun isPhotoBookmarked(photo: Photo?): Boolean {
+        if (photo == null) {
+            return false
+        }
         return sharedPreferences.getStringSet(KEY_PHOTO_IDS, HashSet<String>())?.contains(photo.id) == true
     }
 
