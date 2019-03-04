@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.clewis.flickrfindr.datamodel.Photo
 
 
-class ImageViewHelper(private val imageView: ImageView, private val callback: ImageCallback) {
+class ImageAdapterHelper(private val imageView: ImageView, private val callback: ImageCallback) {
 
     private var currentPhoto: Photo? = null
 
