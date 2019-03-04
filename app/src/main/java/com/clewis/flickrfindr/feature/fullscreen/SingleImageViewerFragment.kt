@@ -135,7 +135,7 @@ class SingleImageViewerFragment: Fragment() {
     //element transition
     private fun setAnimationBounds(container: View, photoView: ImageView) {
         val aspectRatio = arguments?.get(ARG_ASPECT_RATIO) as Float? ?: 1f
-        if (aspectRatio > 1f) {
+        if ((container.height * aspectRatio).toInt() > container.width) {
             val newHeight = (container.width / aspectRatio).toInt()
             photoView.layoutParams?.width = container.width
             photoView.layoutParams?.height = newHeight
