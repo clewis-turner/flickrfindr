@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Flickr Findr</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_bookmarks">Bookmarks</string>
     <string name="title_notifications">Notifications</string>
 
     <string name="enter_photos_hint">Enter Search..</string>
