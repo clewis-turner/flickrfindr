@@ -3,8 +3,8 @@ package com.clewis.flickrfindr.feature.search
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +45,7 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
 
         imageRecyclerView = view.findViewById(R.id.search_recycler_view)
         imageRecyclerView?.adapter = imageAdapter
-        val layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+        val layoutManager = GridLayoutManager(context, 3)
         imageRecyclerView?.layoutManager = layoutManager
         imageRecyclerView?.setHasFixedSize(true)
 
