@@ -42,6 +42,11 @@ class SavedImagesFragment : Fragment(), ImageCallback {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        exitTransition = null
+    }
+
     override fun onImageClicked(photo: Photo, photoView: ImageView) {
         (activity as ImageCallback?)?.onImageClicked(photo, photoView)
     }

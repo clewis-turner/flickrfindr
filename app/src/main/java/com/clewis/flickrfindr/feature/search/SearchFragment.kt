@@ -79,6 +79,11 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        exitTransition = null
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         imageRecyclerView?.clearOnScrollListeners()

@@ -74,20 +74,34 @@ public class MainActivity extends AppCompatActivity implements ImageCallback {
 
     private void showHome() {
         //leave full screen fragment if applicable
-        getSupportFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(SearchFragment.NAME);
         if (fragment == null) {
             fragment = SearchFragment.Companion.newInstance();
         }
+
         getSupportFragmentManager()
                 .beginTransaction()
+                .show(fragment)
                 .replace(R.id.fragment_container, fragment, SearchFragment.NAME)
                 .commit();
+
     }
 
     private void showSavedImages() {
         //leave full screen fragment if applicable
-        getSupportFragmentManager().popBackStack();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+        }
+
+        Fragment searchFragment = getSupportFragmentManager().findFragmentByTag(SearchFragment.NAME);
+        if (searchFragment != null) {
+            getSupportFragmentManager().beginTransaction().hide(searchFragment).commit();
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, SavedImagesFragment.Companion.newInstance(), SavedImagesFragment.NAME)
