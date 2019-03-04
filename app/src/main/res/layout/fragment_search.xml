@@ -19,6 +19,11 @@
         android:importantForAutofill="no"
         />
 
+    <View
+        android:id="@+id/search_progress_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_recycler_view"
         android:layout_width="match_parent"

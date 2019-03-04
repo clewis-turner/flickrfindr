@@ -3,6 +3,7 @@ package com.clewis.flickrfindr.feature.search
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import android.widget.ImageView
 import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.feature.base.ImageCallback
+import com.clewis.flickrfindr.util.ViewUtils
 
 
 class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
@@ -24,6 +26,9 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     var presenter: SearchContract.Presenter? = null
 
     private var imageRecyclerView: RecyclerView? = null
+
+    private var searchProgressDrawable: CircularProgressDrawable? = null
+    private var searchLoadingView: View? = null
 
 
     companion object {
@@ -42,6 +47,9 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
+
+        searchLoadingView = view.findViewById(R.id.search_progress_view)
+        searchProgressDrawable = ViewUtils.getProgressDrawable(context)
 
         imageRecyclerView = view.findViewById(R.id.search_recycler_view)
         imageRecyclerView?.adapter = imageAdapter
@@ -65,6 +73,11 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
         val searchEditText: EditText = view.findViewById(R.id.search_input)
         searchEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+
+                searchProgressDrawable?.start()
+                searchLoadingView?.background = searchProgressDrawable
+                searchLoadingView?.visibility = View.VISIBLE
+
                 presenter?.onSearch(v?.text.toString())
                 searchEditText.setText("")
 
@@ -92,9 +105,12 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     override fun onDestroy() {
         super.onDestroy()
         presenter?.detach()
+        searchProgressDrawable?.stop()
     }
 
     override fun onSearchResults(photos: List<Photo>) {
+        searchProgressDrawable?.stop()
+        searchLoadingView?.visibility = View.GONE
         imageAdapter?.onNewSearch(photos)
     }
 
