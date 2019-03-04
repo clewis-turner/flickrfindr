@@ -5,23 +5,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.feature.base.ImageCallback
-import com.clewis.flickrfindr.feature.base.ImageViewHolder
 
 
-class SearchImageAdapter(private val searchCallback: ImageCallback): RecyclerView.Adapter<ImageViewHolder>(), ImageCallback by searchCallback {
+class SearchImageAdapter(private val searchCallback: ImageCallback): RecyclerView.Adapter<SearchImageViewHolder>(), ImageCallback by searchCallback {
 
     var furthestBoundItem = -1
     private val items = ArrayList<Photo>()
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, pos: Int): ImageViewHolder {
-        return ImageViewHolder(LayoutInflater.from(viewGroup.context), viewGroup, this)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, pos: Int): SearchImageViewHolder {
+        return SearchImageViewHolder(LayoutInflater.from(viewGroup.context), viewGroup, this)
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    override fun onBindViewHolder(imageViewHolder: ImageViewHolder, pos: Int) {
+    override fun onBindViewHolder(imageViewHolder: SearchImageViewHolder, pos: Int) {
         imageViewHolder.onBind(items[pos])
         if (pos > furthestBoundItem) {
             furthestBoundItem = pos

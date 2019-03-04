@@ -2,8 +2,8 @@ package com.clewis.flickrfindr.feature.saved
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +12,6 @@ import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.db.BookmarkManager
 import com.clewis.flickrfindr.feature.base.ImageCallback
-import com.clewis.flickrfindr.feature.search.SearchImageAdapter
 
 
 class SavedImagesFragment : Fragment(), ImageCallback {
@@ -30,12 +29,11 @@ class SavedImagesFragment : Fragment(), ImageCallback {
 
         val bookmarkManager = BookmarkManager(context)
 
-        val imageAdapter = SearchImageAdapter(this)
-        imageAdapter.onNewSearch(bookmarkManager.getBookmarks())
+        val imageAdapter = SavedImageAdapter(bookmarkManager.getBookmarks(), this)
 
         val imageRecyclerView: RecyclerView? = view.findViewById(R.id.saved_recycler_view)
         imageRecyclerView?.adapter = imageAdapter
-        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        val layoutManager = GridLayoutManager(context, 2)
         imageRecyclerView?.layoutManager = layoutManager
         imageRecyclerView?.setHasFixedSize(true)
 
