@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.clewis.flickrfindr.R;
 import com.clewis.flickrfindr.datamodel.Photo;
-import com.clewis.flickrfindr.feature.base.ImageCallback;
 import com.clewis.flickrfindr.feature.base.ImageAdapterHelper;
+import com.clewis.flickrfindr.feature.base.ImageCallback;
 
 public class SavedImageViewHolder extends RecyclerView.ViewHolder {
 

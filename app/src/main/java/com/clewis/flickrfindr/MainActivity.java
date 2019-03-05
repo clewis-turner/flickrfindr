@@ -12,9 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.clewis.flickrfindr.datamodel.Photo;
+import com.clewis.flickrfindr.feature.base.ImageCallback;
 import com.clewis.flickrfindr.feature.fullscreen.SingleImageViewerFragment;
 import com.clewis.flickrfindr.feature.saved.SavedImagesFragment;
-import com.clewis.flickrfindr.feature.base.ImageCallback;
 import com.clewis.flickrfindr.feature.search.SearchFragment;
 
 public class MainActivity extends AppCompatActivity implements ImageCallback {
