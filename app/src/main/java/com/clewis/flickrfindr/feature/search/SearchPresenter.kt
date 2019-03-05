@@ -1,5 +1,6 @@
 package com.clewis.flickrfindr.feature.search
 
+import android.content.Context
 import com.clewis.flickrfindr.datamodel.PhotoData
 import com.clewis.flickrfindr.datamodel.PhotoResponse
 import com.clewis.flickrfindr.modules.NetworkClientProvider
@@ -10,7 +11,7 @@ import io.reactivex.functions.Consumer
 import retrofit2.Response
 
 
-class SearchPresenter(private var view: SearchContract.View?): SearchContract.Presenter {
+class SearchPresenter(context: Context, private var view: SearchContract.View?): SearchContract.Presenter {
 
     private val flickrClient: FlickrClient = NetworkClientProvider.flickrClient
 
@@ -18,6 +19,8 @@ class SearchPresenter(private var view: SearchContract.View?): SearchContract.Pr
 
     private var currentPhotoData: PhotoData? = null
     private var currentSearchTerm: String? = null
+
+    private var recentSearchHelper = RecentSearchHelper(context)
 
     override fun getCurrentPhotoData(): PhotoData? {
         return currentPhotoData
@@ -29,6 +32,7 @@ class SearchPresenter(private var view: SearchContract.View?): SearchContract.Pr
     }
 
     override fun onSearch(searchText: String) {
+        recentSearchHelper.onSearch(searchText)
         val subscriber = Consumer<Response<PhotoResponse>> {
             currentPhotoData = it.body()?.photoData
             val photos = currentPhotoData?.photos
@@ -80,6 +84,9 @@ class SearchPresenter(private var view: SearchContract.View?): SearchContract.Pr
 
     }
 
+    override fun getRecentSearches(): List<String> {
+        return recentSearchHelper.getRecentSearches()
+    }
 
     override fun detach() {
         currentSubscription?.dispose()

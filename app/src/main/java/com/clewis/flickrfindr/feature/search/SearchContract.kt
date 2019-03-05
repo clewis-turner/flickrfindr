@@ -17,6 +17,8 @@ interface SearchContract {
     interface Presenter {
         fun onSearch(searchText: String)
 
+        fun getRecentSearches() : List<String>
+
         fun retrySearch()
 
         fun onMaxScroll()

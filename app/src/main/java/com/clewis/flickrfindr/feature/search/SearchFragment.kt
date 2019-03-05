@@ -2,7 +2,6 @@ package com.clewis.flickrfindr.feature.search
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.CircularProgressDrawable
@@ -32,7 +31,6 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     private var searchProgressDrawable: CircularProgressDrawable? = null
     private var searchLoadingView: View? = null
 
-
     companion object {
         const val NAME = "SearchFragment"
 
@@ -44,7 +42,9 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         imageAdapter = SearchImageAdapter(this)
-        presenter = SearchPresenter(this)
+
+        val context = context ?: return
+        presenter = SearchPresenter(context, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
