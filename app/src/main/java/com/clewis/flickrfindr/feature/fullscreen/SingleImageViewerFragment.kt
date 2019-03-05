@@ -1,5 +1,6 @@
 package com.clewis.flickrfindr.feature.fullscreen
 
+import android.app.AlertDialog
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -68,6 +69,12 @@ class SingleImageViewerFragment: Fragment() {
                     item.setIcon(R.drawable.saved_active)
                     bookmarkManager?.savePhoto(photo)
                 }
+                true
+            }
+            R.id.action_bar_info -> {
+                AlertDialog.Builder(context)
+                        .setMessage(displayPhoto?.title)
+                        .show()
                 true
             }
             else -> {

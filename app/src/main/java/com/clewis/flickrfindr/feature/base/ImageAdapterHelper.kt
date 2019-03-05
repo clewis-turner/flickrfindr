@@ -28,5 +28,4 @@ class ImageAdapterHelper(private val imageView: ImageView,
         Glide.with(imageView.getContext()).load(photo.getUrl()).into(imageView)
         ViewCompat.setTransitionName(imageView, photo.id)
     }
-
 }

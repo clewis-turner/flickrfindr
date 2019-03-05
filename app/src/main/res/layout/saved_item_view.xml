@@ -23,6 +23,7 @@
         android:textAlignment="center"
         android:textSize="14sp"
         android:maxLines="2"
+        android:ellipsize="end"
         />
 
 </LinearLayout>
