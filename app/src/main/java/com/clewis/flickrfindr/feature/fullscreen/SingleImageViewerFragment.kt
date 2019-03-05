@@ -72,8 +72,9 @@ class SingleImageViewerFragment: Fragment() {
                 true
             }
             R.id.action_bar_info -> {
+                var text = if (photo.title.isEmpty()) {"No title for image"} else {photo.title}
                 AlertDialog.Builder(context)
-                        .setMessage(displayPhoto?.title ?: "No title for image")
+                        .setMessage(text)
                         .show()
                 true
             }
