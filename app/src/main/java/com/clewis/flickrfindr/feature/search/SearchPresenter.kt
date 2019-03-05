@@ -23,6 +23,11 @@ class SearchPresenter(private var view: SearchContract.View?): SearchContract.Pr
         return currentPhotoData
     }
 
+    override fun retrySearch() {
+        val searchTerm = currentSearchTerm ?: return
+        onSearch(searchTerm)
+    }
+
     override fun onSearch(searchText: String) {
         val subscriber = Consumer<Response<PhotoResponse>> {
             currentPhotoData = it.body()?.photoData
@@ -30,12 +35,12 @@ class SearchPresenter(private var view: SearchContract.View?): SearchContract.Pr
             if (photos != null) {
                 view?.onSearchResults(photos)
             } else {
-                //todo - notify?
+                view?.onSearchError()
             }
         }
 
         val errorConsumer = Consumer<Throwable> {
-            photoResponse -> photoResponse.cause
+            view?.onSearchError()
         }
 
         currentSearchTerm = searchText

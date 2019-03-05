@@ -29,13 +29,18 @@ class SavedImagesFragment : Fragment(), ImageCallback {
 
         val bookmarkManager = BookmarkManager(context)
 
-        val imageAdapter = SavedImageAdapter(bookmarkManager.getBookmarks(), this)
+        val photos = bookmarkManager.getBookmarks()
 
-        val imageRecyclerView: RecyclerView? = view.findViewById(R.id.saved_recycler_view)
-        imageRecyclerView?.adapter = imageAdapter
-        val layoutManager = GridLayoutManager(context, 2)
-        imageRecyclerView?.layoutManager = layoutManager
-        imageRecyclerView?.setHasFixedSize(true)
+        if (photos.isEmpty()) {
+            (view.findViewById(R.id.saved_images_empty_text) as View?)?.visibility = View.VISIBLE
+        } else {
+            val imageAdapter = SavedImageAdapter(photos, this)
+
+            val imageRecyclerView: RecyclerView? = view.findViewById(R.id.saved_recycler_view)
+            imageRecyclerView?.adapter = imageAdapter
+            imageRecyclerView?.layoutManager = GridLayoutManager(context, 2)
+            imageRecyclerView?.setHasFixedSize(true)
+        }
 
         return view
     }

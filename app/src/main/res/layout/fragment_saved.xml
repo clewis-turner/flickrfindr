@@ -14,4 +14,14 @@
         android:orientation="vertical"
         android:layout_margin="8dp"
         />
+    
+    <TextView
+        android:id="@+id/saved_images_empty_text"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/empty_bookmarks_message"
+        android:textStyle="bold"
+        android:textSize="18sp"/>
 </FrameLayout>

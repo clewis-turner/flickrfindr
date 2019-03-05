@@ -1,6 +1,8 @@
 package com.clewis.flickrfindr.feature.search
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.CircularProgressDrawable
@@ -50,6 +52,7 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
 
         searchLoadingView = view.findViewById(R.id.search_progress_view)
         searchProgressDrawable = ViewUtils.getProgressDrawable(context)
+        searchLoadingView?.background = searchProgressDrawable
 
         imageRecyclerView = view.findViewById(R.id.search_recycler_view)
         imageRecyclerView?.adapter = imageAdapter
@@ -74,9 +77,7 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
         searchEditText.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-                searchProgressDrawable?.start()
-                searchLoadingView?.background = searchProgressDrawable
-                searchLoadingView?.visibility = View.VISIBLE
+                showLoading(true)
 
                 presenter?.onSearch(v?.text.toString())
                 searchEditText.setText("")
@@ -105,15 +106,30 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     override fun onDestroy() {
         super.onDestroy()
         presenter?.detach()
+        showLoading(false)
         searchProgressDrawable?.stop()
     }
 
     override fun onSearchResults(photos: List<Photo>) {
-        searchProgressDrawable?.stop()
-        searchLoadingView?.visibility = View.GONE
+        showLoading(false)
         imageAdapter?.onNewSearch(photos)
     }
 
+    override fun onSearchError() {
+        showLoading(false)
+        val context = context
+        if (context != null && isAdded) {
+            AlertDialog.Builder(context)
+                    .setMessage(R.string.network_error)
+                    .setPositiveButton("Retry") { _, _ ->
+                        showLoading(true)
+                        presenter?.retrySearch()
+                    }
+                    .setNegativeButton("Cancel")  { dialog, _ ->
+                        dialog.cancel()
+                    }.show()
+        }
+    }
 
     override fun onAdditionalSearchResults(photos: List<Photo>) {
         imageAdapter?.addItems(photos)
@@ -121,6 +137,16 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
 
     override fun onImageClicked(photo: Photo, photoView: ImageView) {
         (activity as ImageCallback?)?.onImageClicked(photo, photoView)
+    }
+
+    private fun showLoading(show: Boolean) {
+        if (show) {
+            searchProgressDrawable?.start()
+            searchLoadingView?.visibility = View.VISIBLE
+        } else {
+            searchProgressDrawable?.stop()
+            searchLoadingView?.visibility = View.GONE
+        }
     }
 
 }

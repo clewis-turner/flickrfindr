@@ -8,5 +8,9 @@
 
     <string name="action_bar_bookmark">bookmark</string>
 
+    <string name="empty_bookmarks_message">No images have been saved.</string>
+
+    <string name="network_error">Uh oh, we could not retrieve results.  Please check your internet connection and try again.  </string>
+
     <string name="image_transition_name">imageview_fullscreen_click</string>
 </resources>
