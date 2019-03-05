@@ -6,6 +6,8 @@
 
     <string name="enter_photos_hint">Enter Search..</string>
 
+    <string name="recent_searches">Recent Searches</string>
+
     <string name="action_bar_bookmark">bookmark</string>
 
     <string name="empty_bookmarks_message">No images have been saved.</string>

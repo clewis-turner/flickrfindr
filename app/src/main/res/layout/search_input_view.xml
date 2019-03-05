@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/search_input_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_edittext_height"
+        android:maxLines="1"
+        android:hint="@string/enter_photos_hint"
+        android:inputType="textAutoCorrect"
+        android:imeOptions="actionSearch"
+        android:importantForAutofill="no"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recent_searches"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/recent_searches_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        >
+
+    </LinearLayout>
+
+</LinearLayout>
