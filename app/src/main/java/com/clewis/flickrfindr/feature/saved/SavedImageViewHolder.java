@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.clewis.flickrfindr.R;
 import com.clewis.flickrfindr.datamodel.Photo;
@@ -18,7 +20,9 @@ public class SavedImageViewHolder extends RecyclerView.ViewHolder {
 
     public SavedImageViewHolder(LayoutInflater inflater, ViewGroup parent, ImageCallback callback) {
         super(inflater.inflate(R.layout.saved_item_view, parent, false));
-        imageAdapterHelper = new ImageAdapterHelper(itemView.findViewById(R.id.image_view), callback);
+        ImageView imageView = itemView.findViewById(R.id.saved_item_image_view);
+        TextView textView = itemView.findViewById(R.id.saved_item_text_view);
+        imageAdapterHelper = new ImageAdapterHelper(imageView, textView, callback);
     }
 
     public void onBind(@NonNull Photo photo) {

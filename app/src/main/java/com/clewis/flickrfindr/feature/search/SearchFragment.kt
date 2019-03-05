@@ -163,11 +163,11 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     }
 
     private fun resetSearch() {
+        presenter?.onSearch(null)
         showLoading(false)
         searchHeaderView?.visibility = View.GONE
         searchInputViewHelper?.reset(presenter?.getRecentSearches())
         imageAdapter?.onNewSearch(emptyList())
-        presenter?.detach()
     }
 
 }
