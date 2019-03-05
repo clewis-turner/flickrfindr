@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import com.clewis.flickrfindr.R
 import com.clewis.flickrfindr.datamodel.Photo
 import com.clewis.flickrfindr.feature.base.ImageCallback
@@ -30,6 +31,9 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
 
     private var searchProgressDrawable: CircularProgressDrawable? = null
     private var searchLoadingView: View? = null
+    private var searchHeaderView: TextView? = null
+
+    private var searchInputViewHelper: SearchInputViewHelper? = null
 
     companion object {
         const val NAME = "SearchFragment"
@@ -50,14 +54,21 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_search, container, false)
 
+        val searchView = view.findViewById<View>(R.id.search_input_view)
+        searchInputViewHelper = SearchInputViewHelper(searchView,
+                presenter?.getRecentSearches()
+        ) { onSearchInput(it)}
+
+        searchHeaderView = view.findViewById(R.id.search_header)
+        searchHeaderView?.setOnClickListener { resetSearch()}
+
         searchLoadingView = view.findViewById(R.id.search_progress_view)
         searchProgressDrawable = ViewUtils.getProgressDrawable(context)
         searchLoadingView?.background = searchProgressDrawable
 
         imageRecyclerView = view.findViewById(R.id.search_recycler_view)
         imageRecyclerView?.adapter = imageAdapter
-        val layoutManager = GridLayoutManager(context, 3)
-        imageRecyclerView?.layoutManager = layoutManager
+        imageRecyclerView?.layoutManager = GridLayoutManager(context, 3)
         imageRecyclerView?.setHasFixedSize(true)
 
         imageRecyclerView?.addOnScrollListener(object: RecyclerView.OnScrollListener() {
@@ -73,22 +84,7 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
             }
         })
 
-        val searchEditText: EditText = view.findViewById(R.id.search_input)
-        searchEditText.setOnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                showLoading(true)
-
-                presenter?.onSearch(v?.text.toString())
-                searchEditText.setText("")
-
-                val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                inputManager?.hideSoftInputFromWindow(
-                        activity?.currentFocus?.windowToken,
-                        InputMethodManager.HIDE_NOT_ALWAYS)
-            }
-            true
-        }
+        presenter?.getCurrentSearch()?.let { setSearchHeader(it) }
 
         return view
     }
@@ -116,17 +112,14 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
     }
 
     override fun onSearchError() {
-        showLoading(false)
         val context = context
         if (context != null && isAdded) {
             AlertDialog.Builder(context)
                     .setMessage(R.string.network_error)
-                    .setPositiveButton("Retry") { _, _ ->
-                        showLoading(true)
-                        presenter?.retrySearch()
-                    }
+                    .setPositiveButton("Retry") { _, _ -> presenter?.retrySearch() }
                     .setNegativeButton("Cancel")  { dialog, _ ->
                         dialog.cancel()
+                        resetSearch()
                     }.show()
         }
     }
@@ -139,6 +132,19 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
         (activity as ImageCallback?)?.onImageClicked(photo, photoView)
     }
 
+    private fun onSearchInput(search: String) {
+        showLoading(true)
+
+        setSearchHeader(search)
+
+        presenter?.onSearch(search)
+
+        val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+        inputManager?.hideSoftInputFromWindow(
+                activity?.currentFocus?.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS)
+    }
+
     private fun showLoading(show: Boolean) {
         if (show) {
             searchProgressDrawable?.start()
@@ -147,6 +153,21 @@ class SearchFragment: Fragment(), SearchContract.View, ImageCallback {
             searchProgressDrawable?.stop()
             searchLoadingView?.visibility = View.GONE
         }
+    }
+
+    private fun setSearchHeader(searchHeader: String) {
+        searchHeaderView?.text = searchHeader
+        searchHeaderView?.visibility = View.VISIBLE
+
+        searchInputViewHelper?.hide()
+    }
+
+    private fun resetSearch() {
+        showLoading(false)
+        searchHeaderView?.visibility = View.GONE
+        searchInputViewHelper?.reset(presenter?.getRecentSearches())
+        imageAdapter?.onNewSearch(emptyList())
+        presenter?.detach()
     }
 
 }

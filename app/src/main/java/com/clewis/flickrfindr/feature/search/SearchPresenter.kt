@@ -31,7 +31,14 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
         onSearch(searchTerm)
     }
 
-    override fun onSearch(searchText: String) {
+    override fun getCurrentSearch(): String? {
+        return currentSearchTerm
+    }
+
+    override fun onSearch(newSearch: String?) {
+        currentSearchTerm = newSearch
+        val searchText = newSearch ?: return
+
         recentSearchManager.onSearch(searchText)
         val subscriber = Consumer<Response<PhotoResponse>> {
             currentPhotoData = it.body()?.photoData
@@ -47,7 +54,6 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
             view?.onSearchError()
         }
 
-        currentSearchTerm = searchText
         currentSubscription = flickrClient.getImagesForUrl("?method=flickr.photos.search&text=$searchText")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber, errorConsumer)

@@ -25,6 +25,9 @@ class RecentSearchManager(context: Context?) {
 
         var i = 0
         for (recentSearch in recentSearchArray) {
+            if (recentSearch == search) {
+                continue
+            }
             newRecentSearchesEncoded.append(',')
             newRecentSearchesEncoded.append(recentSearch)
 

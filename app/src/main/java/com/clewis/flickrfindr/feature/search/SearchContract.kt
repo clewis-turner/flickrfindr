@@ -15,7 +15,9 @@ interface SearchContract {
     }
 
     interface Presenter {
-        fun onSearch(searchText: String)
+        fun onSearch(searchText: String?)
+
+        fun getCurrentSearch() : String?
 
         fun getRecentSearches() : List<String>
 
