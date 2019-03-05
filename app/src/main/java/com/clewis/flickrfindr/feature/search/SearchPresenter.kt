@@ -20,7 +20,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
     private var currentPhotoData: PhotoData? = null
     private var currentSearchTerm: String? = null
 
-    private var recentSearchHelper = RecentSearchHelper(context)
+    private var recentSearchManager = RecentSearchManager(context)
 
     override fun getCurrentPhotoData(): PhotoData? {
         return currentPhotoData
@@ -32,7 +32,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
     }
 
     override fun onSearch(searchText: String) {
-        recentSearchHelper.onSearch(searchText)
+        recentSearchManager.onSearch(searchText)
         val subscriber = Consumer<Response<PhotoResponse>> {
             currentPhotoData = it.body()?.photoData
             val photos = currentPhotoData?.photos
@@ -85,7 +85,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
     }
 
     override fun getRecentSearches(): List<String> {
-        return recentSearchHelper.getRecentSearches()
+        return recentSearchManager.getRecentSearches()
     }
 
     override fun detach() {
