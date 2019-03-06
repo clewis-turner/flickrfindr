@@ -43,7 +43,6 @@ class SearchInputViewHelper(searchInputView: View, searches: List<String>?, val 
             val view = TextView(context)
             view.width = LinearLayout.LayoutParams.MATCH_PARENT
             view.text = search
-//            view.setTypeface(null, Typeface.BOLD);
             view.textSize = 20f
 
             view.setOnClickListener {
