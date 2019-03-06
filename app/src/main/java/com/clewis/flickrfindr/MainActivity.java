@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements ImageCallback {
                 Transition exitFade = new Fade();
                 exitFade.setStartDelay(150);
                 previousFragment.setExitTransition(exitFade);
+
+                Transition enterFade = new Fade(Fade.MODE_IN);
+                enterFade.setStartDelay(150);
+                previousFragment.setEnterTransition(enterFade);
             }
         }
 

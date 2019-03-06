@@ -120,6 +120,11 @@ class SingleImageViewerFragment: Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        exitTransition = null
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         loadingIndicator?.stop()
