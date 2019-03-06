@@ -35,11 +35,13 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
         return currentSearchTerm
     }
 
-    override fun onSearch(newSearch: String?) {
-        currentSearchTerm = newSearch
-        val searchText = newSearch ?: return
+    override fun onSearch(searchText: String?) {
+        currentSubscription?.dispose()
 
-        recentSearchManager.onSearch(searchText)
+        currentSearchTerm = searchText
+        val newSearchTerm = searchText ?: return
+
+        recentSearchManager.onSearch(newSearchTerm)
         val subscriber = Consumer<Response<PhotoResponse>> {
             currentPhotoData = it.body()?.photoData
             val photos = currentPhotoData?.photos
@@ -71,6 +73,9 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
         }
 
         val subscriber = Consumer<Response<PhotoResponse>> {
+            if (currentSearchTerm == null) {
+                return@Consumer
+            }
             currentPhotoData = it.body()?.photoData
             val photos = currentPhotoData?.photos
             if (photos != null) {
@@ -81,7 +86,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
         }
 
         val errorConsumer = Consumer<Throwable> {
-            photoResponse -> photoResponse.cause
+            //We'll silently fail and try again on another scroll
         }
 
         currentSubscription = flickrClient.getImages(searchTerm, nextPage)
