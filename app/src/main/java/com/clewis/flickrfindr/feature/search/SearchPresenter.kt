@@ -54,7 +54,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
             view?.onSearchError()
         }
 
-        currentSubscription = flickrClient.getImagesForUrl("?method=flickr.photos.search&text=$searchText")
+        currentSubscription = flickrClient.getImages(searchText)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber, errorConsumer)
     }
@@ -76,7 +76,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
             if (photos != null) {
                 view?.onAdditionalSearchResults(photos)
             } else {
-                //todo - notify?
+                //We'll silently fail and try again on another scroll
             }
         }
 
@@ -84,7 +84,7 @@ class SearchPresenter(context: Context, private var view: SearchContract.View?):
             photoResponse -> photoResponse.cause
         }
 
-        currentSubscription = flickrClient.getImagesForUrl("?method=flickr.photos.search&page=$nextPage&text=$searchTerm")
+        currentSubscription = flickrClient.getImages(searchTerm, nextPage)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber, errorConsumer)
 

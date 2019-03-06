@@ -5,11 +5,14 @@ import com.clewis.flickrfindr.datamodel.PhotoResponse;
 import io.reactivex.Observable;
 import retrofit2.Response;
 import retrofit2.http.GET;
-import retrofit2.http.Url;
+import retrofit2.http.Query;
 
 public interface FlickrClient {
 
-    @GET
-    Observable<Response<PhotoResponse>> getImagesForUrl(@Url String url);
+    @GET("?method=flickr.photos.search")
+    Observable<Response<PhotoResponse>> getImages(@Query("text") String search);
+
+    @GET("?method=flickr.photos.search")
+    Observable<Response<PhotoResponse>> getImages(@Query("text") String search, @Query("page") int nextPage);
 
 }
