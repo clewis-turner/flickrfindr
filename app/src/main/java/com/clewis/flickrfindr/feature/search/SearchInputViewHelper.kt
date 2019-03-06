@@ -1,5 +1,6 @@
 package com.clewis.flickrfindr.feature.search
 
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -17,8 +18,8 @@ class SearchInputViewHelper(searchInputView: View, searches: List<String>?, val 
     init {
         showRecentSearches(searches ?: emptyList())
 
-        searchInput.setOnEditorActionListener { v, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+        searchInput.setOnEditorActionListener { v, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || keyEvent.keyCode == KeyEvent.KEYCODE_ENTER) {
                 onSearch(v?.text.toString())
                 searchInput.setText("")
             }
